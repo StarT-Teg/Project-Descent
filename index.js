@@ -1,15 +1,15 @@
 const readXlsxFile = require('read-excel-file/node')
 const fs = require('fs')
-const Hero = require('./hero.js')
 const {
   createHero,
   getPlotDeck,
   getOverlordDeck,
+  getItems,
 } = require('./utils.js')
 
 // Создаём героя
 // let parsedHeroes = readXlsxFile('SIHM.xlsx',{sheet: 'Heroes 1.1'}).then((parse) => {
-// let hero = createHero("Grey Ker", parse)
+// let hero = createHero("Grey Ker", cleaningValues(parse, 14))
 // console.log(hero)
 // })
 
@@ -40,26 +40,44 @@ let parsedPlotDeck = readXlsxFile('SIHM.xlsx', {
 })
 */
 
+/*
 // Создаём колоду властелина
 let parsedOverlordDeck = readXlsxFile('SIHM.xlsx',{sheet: 'vote4OVERLORD'}).then((parse) => {
 
-
-
-let  overlordDeckValues = [];
-parse.forEach(overlordCardValuesArray => {
-
-let overlordCardValuesSliced = overlordCardValuesArray.slice(0,7)
-
-  if (overlordCardValuesSliced.includes(null)){
-    return;
-  }
-
-overlordDeckValues.push(overlordCardValuesSliced);
-
-})
-
-let overlordDeck = getOverlordDeck('Basic II', overlordDeckValues);
+let overlordDeck = getOverlordDeck('Basic II', cleaningValues(parse, 7));
 console.log(overlordDeck)
 })
+*/
 
-// console.log(parsedResult[0])
+// Создаём список вещей
+let parsedItemsAll = readXlsxFile('SIHM.xlsx', {
+    sheet: 'Shop Items'
+  }).then((parse) => {
+
+const items = getItems(cleaningValues(parse, 23));
+console.log(items);
+      })
+
+
+
+    function cleaningValues(valuesArrayUnclean, sliceTo) {
+
+      const valuesArrayCleaned = [];
+
+      valuesArrayUnclean.forEach(valueArrayUnclean => {
+
+        // Слайсим по заданным размерам
+        const valueArraySliced = valueArrayUnclean.slice(0, sliceTo)
+
+        // Убираем нулы
+        if ((valueArraySliced[0] === null) || (valueArraySliced[0] === undefined)) {
+          return;
+        }
+        else{
+          valuesArrayCleaned.push(valueArraySliced);
+        }
+
+      })
+
+      return valuesArrayCleaned;
+    }

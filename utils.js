@@ -1,13 +1,13 @@
 const Hero = require('./hero.js')
 const PlotDeck = require('./PlotDeck.js')
 const OverlordDeck = require('./OverlordDeck.js')
+const Items = require('./Items.js')
 
 const createHero = (heroName, variables) => {
 
-  let titles = variables[0].slice(0, 14);
   let heroStats = variables.find(array => array[0] === heroName);
 
-  let hero = new Hero(titles, heroStats);
+  let hero = new Hero(variables[0], heroStats);
 
   return hero;
 
@@ -23,25 +23,27 @@ const getPlotDeck = (titles, plotDeckValues) => {
 
 const getOverlordDeck = (basicDeck, overlordDeckValues) => {
 
-const isBasicDeck = basicDeck.split(" ")[1].length === 1 ? "basic ii" : "basic i"
+  const isBasicDeck = basicDeck.split(" ")[1].length === 1 ? "basic ii" : "basic i"
 
-  //const isBasicDeck = basicDeck.length >  ? 'Basic I' : 'basic ii'
+// Фильтр нужен для поиска и исключения одной из неиспользованных базовых колод
+  const overlordDeckValuesFiltered = overlordDeckValues
+    .filter((overlordCardValuesArray, index) => index !== 0 && overlordCardValuesArray[0].toLowerCase().trim(" ") !== isBasicDeck);
 
-const overlordDeckValuesFiltered = overlordDeckValues
-.filter((overlordCardValuesArray, index) => index !== 0 && overlordCardValuesArray[0].toLowerCase().trim(" ") !== isBasicDeck);
-
-const overlordDeck = new OverlordDeck(getTitles(7, overlordDeckValues), overlordDeckValuesFiltered);
+  const overlordDeck = new OverlordDeck(overlordDeckValues[0], overlordDeckValuesFiltered);
 
   return overlordDeck;
 }
 
-const getTitles = (sliceNumber, values) => {
+const getItems = (itemsValuesAll) => {
 
-  return values[0].slice(0, sliceNumber);
+  const items = new Items(itemsValuesAll[0], itemsValuesAll)
+
+  return items;
 }
 
 module.exports = {
   createHero,
   getPlotDeck,
   getOverlordDeck,
+  getItems,
 };
